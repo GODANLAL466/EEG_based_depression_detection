@@ -108,7 +108,7 @@ def main():
 
     # Extract features
     feature_rows = []
-    for participant_id, file_name in eeg_file_by_id.items():
+    for i, (participant_id, file_name) in enumerate(eeg_file_by_id.items()):
         row = metadata[metadata["subject id"] == participant_id]
         if row.empty:
             continue
@@ -120,7 +120,7 @@ def main():
         feats["group"] = group
         feats["label"] = label
         feature_rows.append(feats)
-        print(f"  Processed participant {participant_id} ({group})")
+        print(f"  [{i+1}/{len(eeg_file_by_id)}] Processed participant {participant_id} ({group})", flush=True)
 
     feature_df = pd.DataFrame(feature_rows)
     first_cols = ["subject_id", "group", "label"]

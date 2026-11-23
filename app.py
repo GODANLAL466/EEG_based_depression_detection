@@ -53,6 +53,10 @@ FREQ_BANDS = {
     "Gamma (30–40 Hz)": (30, 40),
 }
 MODEL_FILE = os.path.join(os.path.dirname(__file__), "adaboost_eeg_model.joblib")
+if not os.path.exists(MODEL_FILE):
+    alt_model = os.path.join(os.path.dirname(__file__), "adaboost_71pct_experiment.joblib")
+    if os.path.exists(alt_model):
+        MODEL_FILE = alt_model
 
 # ─── EEG Processing Functions ────────────────────────────────────────────────
 

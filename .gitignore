@@ -17,9 +17,8 @@ env/
 # ── Jupyter ───────────────────────────────
 .ipynb_checkpoints/
 
-# ── Trained model (large binary) ─────────
-# Comment out the next line if you DO want to commit the saved model
-adaboost_eeg_model.joblib
+# ── Trained model (68KB - tracked for immediate inference) ──
+# adaboost_eeg_model.joblib
 
 # ── Dataset ZIP (very large – do NOT commit) ──
 *.zip
