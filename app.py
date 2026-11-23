@@ -280,7 +280,6 @@ st.set_page_config(
 
 # Sidebar
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-illustration-of-a-human-brain.svg/640px-24701-illustration-of-a-human-brain.svg.png", width=120)
     st.title("🧠 EEG Depression Detector")
     st.markdown("""
 **Model:** AdaBoost + Decision Trees  
@@ -314,11 +313,16 @@ The model applies a 1–40 Hz Butterworth bandpass filter, extracts 51 features,
     if not os.path.exists(MODEL_FILE):
         st.error("No trained model found. Please go to the **Train Model** tab first.")
     else:
-        pkg = joblib.load(MODEL_FILE)
-        model = pkg["model"]
-        feature_columns = pkg["feature_columns"]
+        pkg = None
+        try:
+            pkg = joblib.load(MODEL_FILE)
+            model = pkg["model"]
+            feature_columns = pkg["feature_columns"]
+        except Exception as e:
+            st.error(f"Error loading model: {e}")
 
-        uploaded_file = st.file_uploader(
+        if pkg is not None:
+            uploaded_file = st.file_uploader(
             "Upload EEG .txt file (3 columns: Fp1, Fpz, Fp2)",
             type=["txt", "csv"],
             help="Plain-text, whitespace-separated, 3 columns, 250 Hz sampling rate"
@@ -483,16 +487,21 @@ This typically takes **1–3 minutes** depending on your CPU.
                 st.info(f"Model saved to `{MODEL_FILE}`. Switch to the **Predict** tab to use it.")
 
     elif os.path.exists(MODEL_FILE):
-        pkg = joblib.load(MODEL_FILE)
-        st.success("A trained model already exists. Stats from last training run:")
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Accuracy", f"{pkg.get('test_accuracy', 0)*100:.1f}%")
-        c2.metric("Balanced Accuracy", f"{pkg.get('balanced_accuracy', pkg.get('test_accuracy', 0))*100:.1f}%")
-        c3.metric("ROC-AUC", f"{pkg.get('roc_auc', 0):.3f}")
-        if "best_params" in pkg:
-            st.markdown("**Best Hyperparameters:**")
-            st.json(pkg["best_params"])
-        st.markdown(f"**Features:** {len(pkg['feature_columns'])} EEG features")
+        pkg = None
+        try:
+            pkg = joblib.load(MODEL_FILE)
+        except Exception:
+            pkg = None
+        if pkg is not None:
+            st.success("A trained model already exists. Stats from last training run:")
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Accuracy", f"{pkg.get('test_accuracy', 0)*100:.1f}%")
+            c2.metric("Balanced Accuracy", f"{pkg.get('balanced_accuracy', pkg.get('test_accuracy', 0))*100:.1f}%")
+            c3.metric("ROC-AUC", f"{pkg.get('roc_auc', 0):.3f}")
+            if "best_params" in pkg:
+                st.markdown("**Best Hyperparameters:**")
+                st.json(pkg["best_params"])
+            st.markdown(f"**Features:** {len(pkg.get('feature_columns', []))} EEG features")
 
 # ─── ABOUT TAB ───────────────────────────────────────────────────────────────
 with tab_about:
