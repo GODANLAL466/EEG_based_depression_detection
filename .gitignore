@@ -1,0 +1,33 @@
+# ── Python ───────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Virtual environments ──────────────────
+venv/
+.venv/
+env/
+.env/
+
+# ── Jupyter ───────────────────────────────
+.ipynb_checkpoints/
+
+# ── Trained model (large binary) ─────────
+# Comment out the next line if you DO want to commit the saved model
+adaboost_eeg_model.joblib
+
+# ── Dataset ZIP (very large – do NOT commit) ──
+*.zip
+
+# ── OS files ─────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────
+.vscode/
+.idea/
